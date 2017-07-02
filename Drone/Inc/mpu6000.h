@@ -43,7 +43,7 @@ typedef struct {
 	int16_t temp;
 } MPU6000_RAW;
 
-void MPU6000_Init(SPI_HandleTypeDef *spi);
+void MPU6000_Init(void);
 void MPU6000_Raw(MPU6000_RAW *raw);
 
 #endif

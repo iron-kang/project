@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=D:/Work/UAV/Drone/Drone-MDK/Inc
+HeaderPath=D:/Work/github/project/Drone/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;FreeRTOSConfig.h;
-SourcePath=D:/Work/UAV/Drone/Drone-MDK/Src
+SourcePath=D:/Work/github/project/Drone/Src
 SourceFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;FreeRTOSConfig.h;freertos.c;
 
 [PreviousLibFiles]

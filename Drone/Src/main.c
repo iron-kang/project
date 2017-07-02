@@ -50,12 +50,13 @@
 #include "stm32f1xx_hal.h"
 #include "cmsis_os.h"
 #include "mpu6000.h"
+#include "sbus.h"
 
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
-SPI_HandleTypeDef hspi1;
+
 SPI_HandleTypeDef hspi2;
 
 TIM_HandleTypeDef htim1;
@@ -63,7 +64,7 @@ TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
 
-UART_HandleTypeDef huart1;
+
 UART_HandleTypeDef huart3;
 
 PCD_HandleTypeDef hpcd_USB_FS;
@@ -75,15 +76,14 @@ osThreadId defaultTaskHandle;
 char buffer[100];
 MPU6000_RAW raw;
 osThreadId LEDThread1Handle;
+volatile uint16_t rcValue[18]; 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USB_PCD_Init(void);
-static void MX_USART1_UART_Init(void);
 static void MX_USART3_UART_Init(void);
-static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM1_Init(void);
@@ -92,6 +92,7 @@ static void MX_TIM3_Init(void);
 void StartDefaultTask(void const * argument);
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+                                
                                 
 
 /* USER CODE BEGIN PFP */
@@ -143,17 +144,16 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USB_PCD_Init();
-  MX_USART1_UART_Init();
+  SBus_Init();
   MX_USART3_UART_Init();
-  MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM4_Init();
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
-
+  
   /* USER CODE BEGIN 2 */
-  //MPU6000_Init(&hspi1);
+  MPU6000_Init();
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -240,8 +240,6 @@ void SystemClock_Config(void)
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  HAL_RCC_MCOConfig(RCC_MCO, RCC_MCO1SOURCE_PLLCLK, RCC_MCODIV_1);
-
     /**Configure the Systick interrupt time 
     */
   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
@@ -252,29 +250,6 @@ void SystemClock_Config(void)
 
   /* SysTick_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SysTick_IRQn, 15, 0);
-}
-
-/* SPI1 init function */
-static void MX_SPI1_Init(void)
-{
-
-  hspi1.Instance = SPI1;
-  hspi1.Init.Mode = SPI_MODE_MASTER;
-  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
-  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi1.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi1) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
 }
 
 /* SPI2 init function */
@@ -303,33 +278,32 @@ static void MX_SPI2_Init(void)
 /* TIM1 init function */
 static void MX_TIM1_Init(void)
 {
-
-  TIM_ClockConfigTypeDef sClockSourceConfig;
-  TIM_MasterConfigTypeDef sMasterConfig;
+  TIM_OC_InitTypeDef sConfigOC;
 
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
+  htim1.Init.Prescaler = 72 - 1;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 0;
+  htim1.Init.Period = 1000 - 1;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 0;
-  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+	
+  if (HAL_TIM_PWM_Init(&htim1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+	sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 20 * 1000 / 100;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+	
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
 
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
+  HAL_TIM_MspPostInit(&htim1);
+	
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); 
 
 }
 
@@ -438,7 +412,6 @@ static void MX_TIM3_Init(void)
 /* TIM4 init function */
 static void MX_TIM4_Init(void)
 {
-
   TIM_MasterConfigTypeDef sMasterConfig;
   TIM_IC_InitTypeDef sConfigIC;
   TIM_OC_InitTypeDef sConfigOC;
@@ -448,7 +421,7 @@ static void MX_TIM4_Init(void)
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 1000 - 1;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-
+	
   if (HAL_TIM_IC_Init(&htim4) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
@@ -458,7 +431,7 @@ static void MX_TIM4_Init(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
-	#if 0
+
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
@@ -474,7 +447,7 @@ static void MX_TIM4_Init(void)
   {
     _Error_Handler(__FILE__, __LINE__);
   }
-	#endif
+
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
   sConfigOC.Pulse = 20 * 1000 / 100;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
@@ -495,29 +468,10 @@ static void MX_TIM4_Init(void)
   }
 
   HAL_TIM_MspPostInit(&htim4);
-	//HAL_TIM_Base_Start(&htim4); 
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2);
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4);
-}
-
-/* USART1 init function */
-static void MX_USART1_UART_Init(void)
-{
-
-  huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
-  huart1.Init.Mode = UART_MODE_TX_RX;
-  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
+	//HAL_TIM_Base_Start(&htim4);
+	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_2); 
+	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3); 
+	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_4); 
 }
 
 /* USART3 init function */
@@ -563,7 +517,6 @@ static void MX_USB_PCD_Init(void)
         * Output
         * EVENT_OUT
         * EXTI
-     PA8   ------> RCC_MCO
 */
 static void MX_GPIO_Init(void)
 {
@@ -602,12 +555,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PA8 */
-  GPIO_InitStruct.Pin = GPIO_PIN_8;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PB4 */
   GPIO_InitStruct.Pin = GPIO_PIN_4;
