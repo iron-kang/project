@@ -41,10 +41,11 @@ typedef struct {
 	int16_t gy;
 	int16_t gz;
 	int16_t temp;
-} MPU6000_RAW;
+} MPU6000_INFO;
 
 void MPU6000_Init(void);
-void MPU6000_Raw(MPU6000_RAW *raw);
+void MPU6000_Raw(MPU6000_INFO *raw);
+void MPU6000_Filter(MPU6000_INFO *raw, MPU6000_INFO *filter);
 
 #endif
 

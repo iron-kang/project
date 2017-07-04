@@ -2,11 +2,21 @@
 
 #define MPU6000_SPI_ENABLE HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET)
 #define MPU6000_SPI_DISABLE HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET)
+#define Pi	3.1415927f 
+#define GYRO_Sensitivity    1/16.4
 
 HAL_StatusTypeDef status;
 SPI_HandleTypeDef hspi1;
 uint8_t addr, dat;
 uint8_t buf[14];
+float IIR_FACTOR = 0.001 /( 0.001 + 1/(2.0f*Pi*10.0) );
+
+void Gyro_Real(MPU6000_INFO *raw, float *gyro)
+{
+    gyro[0] = (float)(raw->gx * GYRO_Sensitivity);
+	gyro[1] = (float)(raw->gy * GYRO_Sensitivity);
+	gyro[2] = (float)(raw->gz * GYRO_Sensitivity);
+}
 
 void MPU6000_SPI_Init()
 {
@@ -84,7 +94,7 @@ void MPU6000_Init(void)
 	MPU6000_SPI_ENABLE;
 	addr = MPU6000_ACCEL_CONFIG;
 	HAL_SPI_Transmit(&hspi1, &addr, 1, 50);
-	dat = 0x0;//0x08;		//1000
+	dat = 0x18;//0x08;		//1000
 	HAL_SPI_Transmit(&hspi1, &dat, 1, 50);
 	MPU6000_SPI_DISABLE;
 	HAL_Delay(1);
@@ -92,14 +102,14 @@ void MPU6000_Init(void)
 	MPU6000_SPI_ENABLE;
 	addr = MPU6000_GYRO_CONFIG;
 	HAL_SPI_Transmit(&hspi1, &addr, 1, 50);
-	dat = 0x0;//0x10;		//4G
+	dat = 0x1F;//0x10;		//4G
 	HAL_SPI_Transmit(&hspi1, &dat, 1, 50);
 	MPU6000_SPI_DISABLE;
 	HAL_Delay(100);
  
 }
 
-void MPU6000_Raw(MPU6000_RAW *raw)
+void MPU6000_Raw(MPU6000_INFO *raw)
 {
 	MPU6000_SPI_ENABLE;
 	addr = MPU6000_ACCEL_XOUT_H | 0x80;
@@ -114,5 +124,40 @@ void MPU6000_Raw(MPU6000_RAW *raw)
 	raw->gx = (((int16_t)buf[8]) << 8) | buf[9];
 	raw->gy = (((int16_t)buf[10]) << 8) | buf[11];
 	raw->gz = (((int16_t)buf[12]) << 8) | buf[13];
+}
+
+void MPU6000_Filter(MPU6000_INFO *raw, MPU6000_INFO *filter)
+{
+    static int16_t Filter_x[2],Filter_y[2],Filter_z[2];
+	static uint8_t Filter_count;
+	int32_t Filter_sum_x=0,Filter_sum_y=0,Filter_sum_z=0;
+	uint8_t i=0;
+	
+	Filter_x[Filter_count] = raw->gx;
+	Filter_y[Filter_count] = raw->gy;
+	Filter_z[Filter_count] = raw->gz;
+
+	for(i=0;i<2;i++)
+	{
+		Filter_sum_x += Filter_x[i];
+		Filter_sum_y += Filter_y[i];
+		Filter_sum_z += Filter_z[i];
+	}	
+	
+	filter->ax = Filter_sum_x / 2;
+	filter->ay = Filter_sum_y / 2;
+	filter->az = Filter_sum_z / 2;
+	
+	Filter_count++;
+	if(Filter_count == 2)
+		Filter_count=0;
+    
+    filter->ax = filter->ax + IIR_FACTOR*(raw->ax - filter->ax); 
+	filter->ay = filter->ay + IIR_FACTOR*(raw->ay - filter->ay); 
+	filter->az = filter->az + IIR_FACTOR*(raw->az - filter->az);
+}
+
+void MPU6000_Quaternion(MPU6000_INFO *raw)
+{
 }
 
