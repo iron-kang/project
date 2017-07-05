@@ -3,19 +3,38 @@
 #define MPU6000_SPI_ENABLE HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET)
 #define MPU6000_SPI_DISABLE HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET)
 #define Pi	3.1415927f 
-#define GYRO_Sensitivity    1/16.4
+#define RawData_to_Angle	0.0610351f
+#define RawData_to_Radian	0.0010653f
+#define Kp 	1.0f
+#define Ki 	0.001f
+#define halfT 0.0005f
+#define T	0.001f
 
 HAL_StatusTypeDef status;
 SPI_HandleTypeDef hspi1;
 uint8_t addr, dat;
 uint8_t buf[14];
 float IIR_FACTOR = 0.001 /( 0.001 + 1/(2.0f*Pi*10.0) );
+float q0 = 1, q1 = 0, q2 = 0, q3 = 0;
+float exInt = 0, eyInt = 0, ezInt = 0; 
+float ax = 0, ay = 0, az = 0, gx = 0, gy = 0, gz = 0;
 
-void Gyro_Real(MPU6000_INFO *raw, float *gyro)
+float invSqrt(float x)
 {
-    gyro[0] = (float)(raw->gx * GYRO_Sensitivity);
-	gyro[1] = (float)(raw->gy * GYRO_Sensitivity);
-	gyro[2] = (float)(raw->gz * GYRO_Sensitivity);
+  float halfx = 0.5f * x;
+  float y = x;
+  long i = *(long*)&y;
+  i = 0x5f3759df - (i>>1);
+  y = *(float*)&i;
+  y = y * (1.5f - (halfx * y * y));
+  return y;
+}
+
+void Get_Radian(MPU6000_INFO *filter, MPU6000_Gyro *gyro)
+{
+    gyro->x = (float)(filter->gx * RawData_to_Radian);
+	gyro->y = (float)(filter->gy * RawData_to_Radian);
+	gyro->z = (float)(filter->gz * RawData_to_Radian);
 }
 
 void MPU6000_SPI_Init()
@@ -157,7 +176,55 @@ void MPU6000_Filter(MPU6000_INFO *raw, MPU6000_INFO *filter)
 	filter->az = filter->az + IIR_FACTOR*(raw->az - filter->az);
 }
 
-void MPU6000_Quaternion(MPU6000_INFO *raw)
-{
+void MPU6000_AttitudeFusion(MPU6000_Gyro *gyro, MPU6000_INFO *filter, MPU6000_Attitude *attitude)
+{   
+    float norm;
+	float vx, vy, vz;
+	float ex, ey, ez;
+	float q0_last = q0;	
+	float q1_last = q1;	
+	float q2_last = q2;	
+	float q3_last = q3;	
+    ax = filter->ax;
+    ay = filter->ay;
+    az = filter->az;
+    gx = gyro->x;
+    gy = gyro->y;
+    gz = gyro->z;
+ 
+    Get_Radian(filter, gyro);
+	norm = invSqrt(ax*ax + ay*ay + az*az);
+	ax = ax * norm;
+	ay = ay * norm;
+	az = az * norm;
+
+	vx = 2*(q1*q3 - q0*q2);
+	vy = 2*(q0*q1 + q2*q3);
+	vz = q0*q0 - q1*q1 - q2*q2 + q3*q3;
+
+	ex = ay*vz - az*vy;
+	ey = az*vx - ax*vz;
+	ez = ax*vy - ay*vx;
+
+	exInt = exInt + ex*Ki;
+	eyInt = eyInt + ey*Ki;
+	ezInt = ezInt + ez*Ki;
+
+	gx = gx + Kp*ex + exInt;
+	gy = gy + Kp*ey + eyInt;
+	gz = gz + Kp*ez + ezInt;
+
+	q0 = q0_last + (-q1_last*gx - q2_last*gy - q3_last*gz)*halfT;
+	q1 = q1_last + ( q0_last*gx + q2_last*gz - q3_last*gy)*halfT;
+	q2 = q2_last + ( q0_last*gy - q1_last*gz + q3_last*gx)*halfT;
+	q3 = q3_last + ( q0_last*gz + q1_last*gy - q2_last*gx)*halfT; 
+			
+	norm = invSqrt(q0*q0 + q1*q1 + q2*q2 + q3*q3);
+	q0 = q0 * norm;
+	q1 = q1 * norm;
+	q2 = q2 * norm;
+	q3 = q3 * norm;
+	
+	attitude->yaw  +=  filter->gz * RawData_to_Angle * 0.001f;
 }
 

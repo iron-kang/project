@@ -420,9 +420,9 @@
               <FilePath>..\Src\timer.c</FilePath>
             </File>
             <File>
-              <FileName>task.c</FileName>
+              <FileName>job.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\task.c</FilePath>
+              <FilePath>..\Src\job.c</FilePath>
             </File>
           </Files>
         </Group>

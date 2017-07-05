@@ -1,6 +1,7 @@
-#include "task.h"
+#include "job.h"
 #include "cmsis_os.h"
 #include "mpu6000.h"
+#include "task.h"
 
 osThreadId LEDThread1Handle;
 osThreadId thread_1000Hz;
@@ -9,7 +10,7 @@ MPU6000_INFO raw, filter;
 
 void Thread_1000Hz(void const *argument);
 
-void Task_Start(void)
+void Job_Start(void)
 {
     osThreadDef(THREAD_1000HZ, Thread_1000Hz, osPriorityNormal, 0, configMINIMAL_STACK_SIZE);
 	thread_1000Hz = osThreadCreate(osThread(THREAD_1000HZ), NULL);

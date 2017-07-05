@@ -43,9 +43,22 @@ typedef struct {
 	int16_t temp;
 } MPU6000_INFO;
 
+typedef struct {
+    float yaw;
+    float pitch;
+    float roll;
+} MPU6000_Attitude;
+
+typedef struct {
+    float x;
+    float y;
+    float z;
+} MPU6000_Gyro;
+
 void MPU6000_Init(void);
 void MPU6000_Raw(MPU6000_INFO *raw);
 void MPU6000_Filter(MPU6000_INFO *raw, MPU6000_INFO *filter);
+void MPU6000_AttitudeFusion(MPU6000_Gyro *gyro, MPU6000_INFO *filter, MPU6000_Attitude *attitude);
 
 #endif
 
