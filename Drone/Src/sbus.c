@@ -23,7 +23,7 @@ void SBus_Init(void)
     }
 }
 
-void SBus_Read(uint16_t *rc)
+void SBus_Read(volatile uint16_t *rc)
 {
 	sbusIndex = 0;
 	
