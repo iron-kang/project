@@ -1,13 +1,9 @@
-#include "thread.h"
-#include "cmsis_os.h"
-#include "mpu6000.h"
-#include "task.h"
-#include "sbus.h"
+#include "common.h"
 
-osThreadId LEDThread1Handle;
 osThreadId thread_1000Hz;
 MPU6000_INFO raw, filter;
-volatile uint16_t rcValue[18]; 
+volatile uint16_t channel[18];
+char buffer[100];
 
 void Thread_1000Hz(void const *argument);
 
@@ -22,11 +18,18 @@ void Thread_Start(void)
 void Thread_1000Hz(void const *argument)
 {
 	uint32_t PreviousWakeTime = osKernelSysTick();
+	uint8_t i;
+
 	for (;;)
     {
         MPU6000_Raw(&raw);
         MPU6000_Filter(&raw, &filter);
-        //SBus_Read(rcValue);
+//        SBus_Read(channel);
+//        for (i = 0; i < 18; i++)
+//        {
+//        	sprintf(buffer, "ch%d: %d\n", i+1, (int) lround(channel[i] / 9.92) - 100);
+//        	UART3_Print(buffer);
+//        }
         //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
         HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
         osDelayUntil(&PreviousWakeTime, 1);

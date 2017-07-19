@@ -1,8 +1,6 @@
 #ifndef __MPU6000_H
 #define __MPU6000_H
 
-#include "stm32f1xx_hal.h"
-
 #define MPU6000_CONFIG          0x1A
 #define MPU6000_SMPLRT_DIV      0x19
 #define MPU6000_GYRO_CONFIG     0x1B

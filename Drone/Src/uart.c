@@ -1,4 +1,4 @@
-#include "uart.h"
+#include "common.h"
 
 UART_HandleTypeDef huart3;
 
@@ -16,4 +16,9 @@ void UART3_Init(void)
     {
     _Error_Handler(__FILE__, __LINE__);
     }
+}
+
+void UART3_Print(char *str)
+{
+	HAL_UART_Transmit(&huart3, (uint8_t *)str, strlen(str), 100);
 }

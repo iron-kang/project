@@ -1,4 +1,5 @@
-#include "mpu6000.h"
+//https://github.com/jihlein/AQ32Plus
+#include "common.h"
 
 #define MPU6000_SPI_ENABLE HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET)
 #define MPU6000_SPI_DISABLE HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET)

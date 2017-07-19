@@ -1,4 +1,4 @@
-#include "timer.h"
+#include "common.h"
 
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
