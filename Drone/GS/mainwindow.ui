@@ -1,24 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>800</width>
+    <height>600</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>40</y>
+      <width>341</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>SBus</string>
+    </property>
+    <widget class="QLabel" name="ch1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 1:        Channel 10:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 2:        Channel 11:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 3:        Channel 12:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 4:        Channel 13:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 5:        Channel 14:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 6:        Channel 15:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch7">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 7:        Channel 16:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>180</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 8:        Channel 17:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch9">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>200</y>
+       <width>291</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel 9:        Channel 18:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch1_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>40</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>1</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch2_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>60</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>2</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch3_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>80</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>3</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch4_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>4</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch5_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>120</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>5</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch6_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>6</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch7_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>160</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>7</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch8_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>180</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>8</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch9_val">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>200</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>9</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch10_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>40</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>10</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch18_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>200</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>18</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch11_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>60</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>11</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch12_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>80</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>12</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch13_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>100</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>13</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch14_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>120</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>14</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch15_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>140</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>15</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch16_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>160</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>16</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="ch17_val">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>180</y>
+       <width>60</width>
+       <height>18</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>17</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <zorder>ch1</zorder>
+    <zorder>ch2</zorder>
+    <zorder>ch3</zorder>
+    <zorder>ch4</zorder>
+    <zorder>ch5</zorder>
+    <zorder>ch6</zorder>
+    <zorder>ch7</zorder>
+    <zorder>ch8</zorder>
+    <zorder>ch9</zorder>
+    <zorder>ch1_val</zorder>
+    <zorder>ch2_val</zorder>
+    <zorder>ch3_val</zorder>
+    <zorder>ch4_val</zorder>
+    <zorder>ch5_val</zorder>
+    <zorder>ch6_val</zorder>
+    <zorder>ch7_val</zorder>
+    <zorder>ch8_val</zorder>
+    <zorder>ch9_val</zorder>
+    <zorder>ch10_val</zorder>
+    <zorder>ch18_val</zorder>
+    <zorder>ch11_val</zorder>
+    <zorder>ch12_val</zorder>
+    <zorder>ch13_val</zorder>
+    <zorder>ch14_val</zorder>
+    <zorder>ch15_val</zorder>
+    <zorder>ch16_val</zorder>
+    <zorder>ch16_val</zorder>
+    <zorder>ch17_val</zorder>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>28</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>

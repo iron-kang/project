@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    arduino-serial-lib.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    arduino-serial-lib.h
 
 FORMS    += mainwindow.ui
