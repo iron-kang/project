@@ -19,3 +19,4 @@
 #include "flash.h"
 #include "sbus.h"
 #include "timer.h"
+#include "usbd_cdc_if.h"
