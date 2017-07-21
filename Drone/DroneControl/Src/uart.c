@@ -22,3 +22,8 @@ void UART3_Print(char *str)
 {
 	HAL_UART_Transmit(&huart3, (uint8_t *)str, strlen(str), 100);
 }
+
+void UART3_Read(char *buf, uint8_t size)
+{
+	HAL_UART_Receive(&huart3, (uint8_t *)buf, 1, 10);
+}
